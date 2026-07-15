@@ -1,0 +1,25 @@
+# Kotlin/Gradle (backend)
+backend/.gradle/
+backend/build/
+backend/models/
+backend/.kotlin/
+backend/out/
+backend/bin/
+
+# React Native (client) — add once client exists
+client/node_modules/
+client/.expo/
+client/ios/Pods/
+client/android/.gradle/
+client/android/build/
+client/android/app/build/
+client/*.log
+client/.env
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
