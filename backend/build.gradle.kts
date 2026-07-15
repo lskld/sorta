@@ -18,6 +18,8 @@ dependencies {
     implementation(ktorLibs.server.core)
     implementation(ktorLibs.server.netty)
     implementation(libs.logback.classic)
+    implementation("com.microsoft.onnxruntime:onnxruntime:1.27.0")
+    implementation("ai.djl.huggingface:tokenizers:0.36.0")
 
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)
