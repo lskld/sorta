@@ -23,3 +23,5 @@ client/.env
 # OS
 .DS_Store
 Thumbs.db
+
+raw
