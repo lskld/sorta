@@ -44,52 +44,52 @@ def classify(description: str) -> list[str]:
                 break  # found one keyword hit for this category, move on
     return matches
 
+if __name__ == "__main__":
+    # --- Load every distinct description, weighted by how many rows use it ---
+    # (row-weight matters: a handful of very common products account for a
+    # disproportionate share of actual transactions, so "% of rows covered"
+    # is a more meaningful number than "% of distinct descriptions covered.")
+    desc_row_counts = Counter()
+    with open("online_retail_II.csv", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            desc = row.get("Description", "").strip()
+            if desc:
+                desc_row_counts[desc] += 1
 
-# --- Load every distinct description, weighted by how many rows use it ---
-# (row-weight matters: a handful of very common products account for a
-# disproportionate share of actual transactions, so "% of rows covered"
-# is a more meaningful number than "% of distinct descriptions covered.")
-desc_row_counts = Counter()
-with open("online_retail_II.csv", encoding="utf-8") as f:
-    reader = csv.DictReader(f)
-    for row in reader:
-        desc = row.get("Description", "").strip()
-        if desc:
-            desc_row_counts[desc] += 1
+    total_distinct = len(desc_row_counts)
+    total_rows = sum(desc_row_counts.values())
 
-total_distinct = len(desc_row_counts)
-total_rows = sum(desc_row_counts.values())
+    uncategorized = []
+    multi_match = []
+    covered_distinct = 0
+    covered_rows = 0
 
-uncategorized = []
-multi_match = []
-covered_distinct = 0
-covered_rows = 0
+    for desc, row_count in desc_row_counts.items():
+        matches = classify(desc)
+        if not matches:
+            uncategorized.append(desc)
+        else:
+            covered_distinct += 1
+            covered_rows += row_count
+            if len(matches) > 1:
+                multi_match.append((desc, matches))
 
-for desc, row_count in desc_row_counts.items():
-    matches = classify(desc)
-    if not matches:
-        uncategorized.append(desc)
-    else:
-        covered_distinct += 1
-        covered_rows += row_count
-        if len(matches) > 1:
-            multi_match.append((desc, matches))
-
-print(f"Total distinct descriptions: {total_distinct}")
-print(f"Total rows: {total_rows}")
-print()
-print(f"Covered (distinct descriptions): {covered_distinct} ({covered_distinct/total_distinct:.1%})")
-print(f"Uncovered (distinct descriptions): {len(uncategorized)} ({len(uncategorized)/total_distinct:.1%})")
-print()
-print(f"Covered (rows): {covered_rows} ({covered_rows/total_rows:.1%})")
-print(f"Uncovered (rows): {total_rows - covered_rows} ({(total_rows - covered_rows)/total_rows:.1%})")
-print()
-print(f"Descriptions matching MULTIPLE categories: {len(multi_match)} ({len(multi_match)/total_distinct:.1%})")
-print()
-print("Sample of 30 UNCATEGORIZED descriptions:")
-for desc in uncategorized[:30]:
-    print(" -", desc)
-print()
-print("Sample of 15 MULTI-MATCH descriptions:")
-for desc, cats in multi_match[:15]:
-    print(" -", desc, "->", cats)
+    print(f"Total distinct descriptions: {total_distinct}")
+    print(f"Total rows: {total_rows}")
+    print()
+    print(f"Covered (distinct descriptions): {covered_distinct} ({covered_distinct/total_distinct:.1%})")
+    print(f"Uncovered (distinct descriptions): {len(uncategorized)} ({len(uncategorized)/total_distinct:.1%})")
+    print()
+    print(f"Covered (rows): {covered_rows} ({covered_rows/total_rows:.1%})")
+    print(f"Uncovered (rows): {total_rows - covered_rows} ({(total_rows - covered_rows)/total_rows:.1%})")
+    print()
+    print(f"Descriptions matching MULTIPLE categories: {len(multi_match)} ({len(multi_match)/total_distinct:.1%})")
+    print()
+    print("Sample of 30 UNCATEGORIZED descriptions:")
+    for desc in uncategorized[:30]:
+        print(" -", desc)
+    print()
+    print("Sample of 15 MULTI-MATCH descriptions:")
+    for desc, cats in multi_match[:15]:
+        print(" -", desc, "->", cats)

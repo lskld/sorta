@@ -25,3 +25,8 @@ client/.env
 Thumbs.db
 
 raw
+
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+*$py.class
