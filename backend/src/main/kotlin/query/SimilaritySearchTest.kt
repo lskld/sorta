@@ -19,9 +19,18 @@ fun main() {
     DriverManager.getConnection(url, user, password).use { connection ->
         PGvector.addVectorType(connection)
 
-        val results = searchBySimilarity("cozy winter gifts", tokenizer, env, session, connection)
-        for (r in results) {
-            println("${r.name} (${r.category}) - distance ${r.distance}")
+        val refDate = getReferenceDate(connection)
+        val lastMonth = resolveDatePhrase("last month", refDate)
+        println("Resolved 'last month' -> $lastMonth\n")
+
+        println("--- WITHOUT date filter ---")
+        for (r in searchBySimilarity("christmas decorations", dateRange = null, tokenizer = tokenizer, env = env, session = session, connection = connection)) {
+            println("${r.name} (${r.category}) - distance ${r.distance}, sold ${r.unitsSold}")
+        }
+
+        println("--- WITH date filter ---")
+        for (r in searchBySimilarity("christmas decorations", dateRange = lastMonth, tokenizer = tokenizer, env = env, session = session, connection = connection)) {
+            println("${r.name} (${r.category}) - distance ${r.distance}, sold ${r.unitsSold}")
         }
     }
 
