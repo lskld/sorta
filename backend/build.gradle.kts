@@ -3,6 +3,10 @@ plugins {
     alias(ktorLibs.plugins.ktor)
 }
 
+tasks.withType<JavaExec> {
+    workingDir = rootDir
+}
+
 group = "com.lskld"
 version = "1.0.0-SNAPSHOT"
 
@@ -21,6 +25,7 @@ dependencies {
     implementation("com.microsoft.onnxruntime:onnxruntime:1.27.0")
     implementation("ai.djl.huggingface:tokenizers:0.36.0")
     implementation("org.postgresql:postgresql:42.7.13")
+    implementation("com.pgvector:pgvector:0.1.6")
 
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)
