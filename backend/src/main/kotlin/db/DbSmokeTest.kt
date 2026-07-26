@@ -1,4 +1,4 @@
-package com.lskld.db
+package db
 
 import java.sql.DriverManager
 
