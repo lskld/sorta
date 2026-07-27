@@ -8,14 +8,6 @@ import embedding.embed
 import java.sql.Connection
 import java.sql.Date
 
-data class SearchResult(
-    val productId: String,
-    val name: String,
-    val category: String,
-    val distance: Double,
-    val unitsSold: Int
-)
-
 fun searchBySimilarity(
     queryText: String,
     dateRange: DateRange? = null,
