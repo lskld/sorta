@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(ktorLibs.plugins.ktor)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 tasks.withType<JavaExec> {
@@ -26,6 +27,8 @@ dependencies {
     implementation("ai.djl.huggingface:tokenizers:0.36.0")
     implementation("org.postgresql:postgresql:42.7.13")
     implementation("com.pgvector:pgvector:0.1.6")
+    implementation(ktorLibs.server.contentNegotiation)
+    implementation(ktorLibs.serialization.kotlinx.json)
 
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)
