@@ -5,7 +5,6 @@ import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtSession
 import com.pgvector.PGvector
 import embedding.embed
-import org.postgresql.jdbc.PgArray
 import java.sql.Connection
 import java.sql.Date
 import java.sql.PreparedStatement
@@ -53,6 +52,7 @@ private fun collectResults(statement: PreparedStatement): List<SearchResult> {
 
 fun runQuery(
     queryText: String,
+    anchorId: String?,
     refDate: LocalDate,
     tokenizer: HuggingFaceTokenizer,
     env: OrtEnvironment,
@@ -60,32 +60,30 @@ fun runQuery(
     connection: Connection,
     limit: Int = 10
 ): QueryResponse {
-    val anchor = resolveAnchor(queryText, connection)
     val dateRange = resolveDatePhrase(queryText, refDate)
 
-    val targetEmbedding: PGvector = if (anchor.productId != null) {
-        fetchProductEmbedding(anchor.productId, connection)
-            ?: PGvector(embed(queryText, tokenizer, env, session))
-    } else {
-        PGvector(embed(queryText, tokenizer, env, session))
-    }
+    val anchorEmbedding: PGvector? = anchorId?.let { fetchProductEmbedding(it, connection) }
+    val resolvedAnchorId: String? = if (anchorEmbedding != null) anchorId else null
+
+    val targetEmbedding: PGvector = anchorEmbedding
+        ?: PGvector(embed(queryText, tokenizer, env, session))
 
     val results: List<SearchResult> = when {
         // Case 1: Anchor + Date Present
-        anchor.productId != null && dateRange != null -> {
+        resolvedAnchorId != null && dateRange != null -> {
             val sql = """
                 SELECT p.product_id, p.name, p.category,
                     p.embedding <-> ? AS distance,
                     COALESCE((SELECT SUM(quantity) FROM sales
-                        WHERE sales.product_id = p.product_id
-                        AND sales.sale_date BETWEEN ? AND ?), 0) AS unitsSold
+                              WHERE sales.product_id = p.product_id
+                                AND sales.sale_date BETWEEN ? AND ?), 0) AS units_sold
                 FROM products p
                 WHERE p.product_id != ?
-                    AND EXISTS (
-                        SELECT 1 FROM sales
-                        WHERE sales.product_id = p.product_id
+                  AND EXISTS (
+                      SELECT 1 FROM sales
+                      WHERE sales.product_id = p.product_id
                         AND sales.sale_date BETWEEN ? AND ?
-                    )
+                  )
                 ORDER BY distance
                 LIMIT ?
             """.trimIndent()
@@ -93,7 +91,7 @@ fun runQuery(
                 statement.setObject(1, targetEmbedding)
                 statement.setDate(2, Date.valueOf(dateRange.start))
                 statement.setDate(3, Date.valueOf(dateRange.end))
-                statement.setString(4, anchor.productId)
+                statement.setString(4, resolvedAnchorId)
                 statement.setDate(5, Date.valueOf(dateRange.start))
                 statement.setDate(6, Date.valueOf(dateRange.end))
                 statement.setInt(7, limit)
@@ -101,7 +99,7 @@ fun runQuery(
             }
         }
         // Case 2: Anchor only, no date
-        anchor.productId != null -> {
+        resolvedAnchorId != null -> {
             val sql = """
                 SELECT p.product_id, p.name, p.category,
                     p.embedding <-> ? AS distance,
@@ -114,7 +112,7 @@ fun runQuery(
             """.trimIndent()
             connection.prepareStatement(sql).use { statement ->
                 statement.setObject(1, targetEmbedding)
-                statement.setString(2, anchor.productId)
+                statement.setString(2, resolvedAnchorId)
                 statement.setInt(3, limit)
                 collectResults(statement)
             }
@@ -164,5 +162,5 @@ fun runQuery(
             }
         }
     }
-    return QueryResponse(results = results, anchorResolved = anchor.productId != null)
+    return QueryResponse(results = results, anchorResolved = resolvedAnchorId != null)
 }
