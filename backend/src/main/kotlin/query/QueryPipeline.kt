@@ -5,22 +5,26 @@ import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtSession
 import com.pgvector.PGvector
 import embedding.embed
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.sql.Connection
 import java.sql.Date
 import java.sql.PreparedStatement
 import java.time.LocalDate
 
+@Serializable
 data class SearchResult(
-    val productId: String,
+    @SerialName("product_id") val productId: String,
     val name: String,
     val category: String,
     val distance: Double,
-    val unitsSold: Int
+    @SerialName("units_sold") val unitsSold: Int
 )
 
+@Serializable
 data class QueryResponse(
     val results: List<SearchResult>,
-    val anchorResolved: Boolean
+    @SerialName("anchor_resolved") val anchorResolved: Boolean
 )
 
 fun fetchProductEmbedding(productId: String, connection: Connection): PGvector? {
