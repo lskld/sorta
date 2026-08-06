@@ -17,9 +17,8 @@ export default function SearchScreen() {
 						paddingHorizontal: 15,
 						borderRadius: 20,
 					}}
-				>
-					Placeholder
-				</TextInput>
+					placeholder="Search..."
+				></TextInput>
 			</View>
 
 			<View style={styles.mainContent}>
@@ -50,6 +49,5 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 		alignItems: "center",
 		justifyContent: "flex-start",
-		backgroundColor: "#ffffff",
 	},
 });
