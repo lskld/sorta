@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { mockProducts } from "../data/mockProducts";
+import ProductList from "../components/ProductList";
 
 export default function SearchScreen() {
 	return (
@@ -22,7 +22,9 @@ export default function SearchScreen() {
 				</TextInput>
 			</View>
 
-			<View style={styles.mainContent}></View>
+			<View style={styles.mainContent}>
+				<ProductList />
+			</View>
 		</SafeAreaView>
 	);
 }
