@@ -1,4 +1,12 @@
-export const mockProducts = [
+export type Product = {
+	product_id: number;
+	name: String;
+	category: String;
+	distance: number;
+	units_sold: number;
+};
+
+export const mockProducts: Product[] = [
 	{
 		product_id: 1,
 		name: "Wireless Bluetooth Headphones",
