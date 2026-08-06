@@ -16,6 +16,14 @@ export default function SearchScreen() {
 						height: 40,
 						paddingHorizontal: 15,
 						borderRadius: 20,
+
+						// Shadow for iOS
+						shadowColor: "#000",
+						shadowOffset: { width: 0, height: 1 },
+						shadowOpacity: 0.1,
+						shadowRadius: 2,
+						// Shadow for Android
+						elevation: 3,
 					}}
 					placeholder="Search..."
 				></TextInput>
@@ -31,13 +39,13 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#fff9e9",
+		backgroundColor: "#efffef",
 		alignItems: "center",
 		justifyContent: "center",
 	},
 	topContent: {
 		width: "90%",
-		marginTop: 50,
+		marginTop: 30,
 		paddingHorizontal: 20,
 		alignItems: "center",
 		justifyContent: "flex-start",

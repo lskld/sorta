@@ -14,15 +14,24 @@ export default function ProductCard({ product }: {
 }
 
 const styles = StyleSheet.create({
-    card: {
-        backgroundColor: '#ffffff',
-        width: '100%',
-        height: 80,
-        marginVertical: 3,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    text: {
-        textAlign: 'center',
-    }
-})
+	card: {
+		backgroundColor: "#ffffff",
+		width: "100%",
+		height: 80,
+		marginVertical: 3,
+		alignItems: "center",
+		justifyContent: "center",
+		borderRadius: 10,
+
+		// Shadow for iOS
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.1,
+		shadowRadius: 2,
+		// Shadow for Android
+		elevation: 3,
+	},
+	text: {
+		textAlign: "center",
+	},
+});
