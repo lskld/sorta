@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProductList from "../components/ProductList";
 
@@ -8,25 +8,12 @@ export default function SearchScreen() {
 			<View style={styles.topContent}>
 				<Text style={{ fontSize: 25 }}>Welcome to Sorta</Text>
 
-				<TextInput
-					style={{
-						marginTop: 20,
-						backgroundColor: "#ffffff",
-						width: "100%",
-						height: 40,
-						paddingHorizontal: 15,
-						borderRadius: 20,
-
-						// Shadow for iOS
-						shadowColor: "#000",
-						shadowOffset: { width: 0, height: 1 },
-						shadowOpacity: 0.1,
-						shadowRadius: 2,
-						// Shadow for Android
-						elevation: 3,
-					}}
-					placeholder="Search..."
-				></TextInput>
+				<View style={styles.searchRow}>
+					<TextInput style={styles.searchInput} placeholder="Search..." />
+					<Pressable style={styles.searchButton}>
+						<Text style={{ color: "white", fontSize: 18 }}>Search</Text>
+					</Pressable>
+				</View>
 			</View>
 
 			<View style={styles.mainContent}>
@@ -57,5 +44,32 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 		alignItems: "center",
 		justifyContent: "flex-start",
+	},
+	searchRow: {
+		flexDirection: "row",
+		alignItems: "center",
+		width: "100%",
+		marginTop: 20,
+	},
+	searchInput: {
+		flex: 1,
+		backgroundColor: "#ffffff",
+		height: 40,
+		paddingHorizontal: 15,
+		borderRadius: 20,
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.1,
+		shadowRadius: 2,
+		elevation: 3,
+	},
+	searchButton: {
+		marginLeft: 10,
+		backgroundColor: "#53e053",
+		width: 80,
+		height: 40,
+		borderRadius: 20,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 });
