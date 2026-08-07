@@ -60,6 +60,9 @@ export default function SearchScreen() {
 						<Text style={{ color: "white", fontSize: 18 }}>Search</Text>
 					</Pressable>
 				</View>
+				<Text style={{ marginTop: 5 }}>
+					Comparing to product id: {selectedId ?? "not selected"}
+				</Text>
 			</View>
 
 			<View style={styles.mainContent}>
