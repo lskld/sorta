@@ -1,16 +1,57 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProductList from "../components/ProductList";
+import { useState } from "react";
+import { Platform } from "react-native";
+
+const getApiBaseUrl = () => {
+	if (Platform.OS === "android") {
+		return "http://10.0.2.2:8080";
+	}
+
+	return "http://localhost:8080";
+};
 
 export default function SearchScreen() {
+	const [searchText, setSearchText] = useState("");
+
+	const handleSearch = async () => {
+		try {
+			const response = await fetch(`${getApiBaseUrl()}/query`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					query_text: searchText,
+				}),
+			});
+			const data = await response.json();
+			console.log("Results:", data); //change later
+		} catch (error) {
+			console.error("Search error:", error);
+		}
+	};
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.topContent}>
 				<Text style={{ fontSize: 25 }}>Welcome to Sorta</Text>
 
 				<View style={styles.searchRow}>
-					<TextInput style={styles.searchInput} placeholder="Search..." />
-					<Pressable style={styles.searchButton}>
+					<TextInput
+						style={styles.searchInput}
+						placeholder="Search..."
+						value={searchText}
+						onChangeText={setSearchText}
+					/>
+					<Pressable
+						style={({ pressed }) => [
+							styles.searchButton,
+							{ transform: [{ scale: pressed ? 0.95 : 1 }] },
+						]}
+						onPress={handleSearch}
+					>
 						<Text style={{ color: "white", fontSize: 18 }}>Search</Text>
 					</Pressable>
 				</View>
