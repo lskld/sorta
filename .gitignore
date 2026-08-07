@@ -23,10 +23,11 @@ client/.env
 # OS
 .DS_Store
 Thumbs.db
-
 raw
 
 # Byte-compiled files
 __pycache__/
 *.py[cod]
 *$py.class
+
+.env

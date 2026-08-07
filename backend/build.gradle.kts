@@ -27,6 +27,7 @@ dependencies {
     implementation("ai.djl.huggingface:tokenizers:0.36.0")
     implementation("org.postgresql:postgresql:42.7.13")
     implementation("com.pgvector:pgvector:0.1.6")
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
     implementation(ktorLibs.server.contentNegotiation)
     implementation(ktorLibs.serialization.kotlinx.json)
 
