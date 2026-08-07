@@ -5,13 +5,16 @@ import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtSession
 import com.pgvector.PGvector
 import embedding.embed
+import io.github.cdimascio.dotenv.Dotenv
 import java.nio.file.Paths
 import java.sql.DriverManager
 
 fun main() {
-    val url = "jdbc:postgresql://localhost:5433/sorta"
-    val user = "postgres"
-    val password = "postgres"
+    val dotenv = Dotenv.load()
+    val port = dotenv["DB_PORT"] ?: "5432"
+    val user = dotenv["DB_USER"] ?: throw IllegalStateException("DB_USER not defined")
+    val password = dotenv["DB_PASSWORD"] ?: throw IllegalStateException("DB_PASSWORD not defined")
+    val url = "jdbc:postgresql://localhost:${port}/sorta"
 
     val env = OrtEnvironment.getEnvironment()
     val session = env.createSession(

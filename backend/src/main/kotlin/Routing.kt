@@ -16,6 +16,7 @@ import query.getReferenceDate
 import query.runQuery
 import java.nio.file.Paths
 import java.sql.DriverManager
+import io.github.cdimascio.dotenv.Dotenv
 
 @Serializable
 data class QueryRequest(
@@ -32,13 +33,18 @@ fun Application.configureRouting() {
     val session = env.createSession(
         "models/bge-small-en-v1.5-onnx/model.onnx",
         OrtSession.SessionOptions()
-    )   
+    )
     val tokenizer = HuggingFaceTokenizer.newInstance(Paths.get("models/bge-small-en-v1.5-onnx"))
 
+    val dotenv = Dotenv.load()
+    val port = dotenv["DB_PORT"] ?: "5432"
+    val user = dotenv["DB_USER"] ?: throw IllegalStateException("DB_USER not defined")
+    val password = dotenv["DB_PASSWORD"] ?: throw IllegalStateException("DB_PASSWORD not defined")
+
     val connection = DriverManager.getConnection(
-        "jdbc:postgresql://localhost:5433/sorta",
-        "postgres",
-        "postgres"
+        "jdbc:postgresql://localhost:${port}/sorta",
+        user,
+        password
     )
     PGvector.addVectorType(connection)
 
