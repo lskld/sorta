@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ProductList from "../components/ProductList";
 import { useState } from "react";
 import { Platform } from "react-native";
+import { Product } from "../types";
 
 const getApiBaseUrl = () => {
 	if (Platform.OS === "android") {
@@ -14,6 +15,7 @@ const getApiBaseUrl = () => {
 
 export default function SearchScreen() {
 	const [searchText, setSearchText] = useState("");
+	const [products, setProducts] = useState<Product[]>([]);
 
 	const handleSearch = async () => {
 		try {
@@ -26,8 +28,8 @@ export default function SearchScreen() {
 					query_text: searchText,
 				}),
 			});
-			const data = await response.json();
-			console.log("Results:", data); //change later
+			const { results: apiProducts } = await response.json();
+			setProducts(apiProducts as Product[]);
 		} catch (error) {
 			console.error("Search error:", error);
 		}
@@ -58,7 +60,7 @@ export default function SearchScreen() {
 			</View>
 
 			<View style={styles.mainContent}>
-				<ProductList />
+				<ProductList products={products} />
 			</View>
 		</SafeAreaView>
 	);
