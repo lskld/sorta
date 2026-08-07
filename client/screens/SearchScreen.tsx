@@ -16,6 +16,7 @@ const getApiBaseUrl = () => {
 export default function SearchScreen() {
 	const [searchText, setSearchText] = useState("");
 	const [products, setProducts] = useState<Product[]>([]);
+	const [selectedId, setSelectedId] = useState<string | null>(null);
 
 	const handleSearch = async () => {
 		try {
@@ -26,6 +27,7 @@ export default function SearchScreen() {
 				},
 				body: JSON.stringify({
 					query_text: searchText,
+					anchor_id: selectedId,
 				}),
 			});
 			const { results: apiProducts } = await response.json();
@@ -60,7 +62,11 @@ export default function SearchScreen() {
 			</View>
 
 			<View style={styles.mainContent}>
-				<ProductList products={products} />
+				<ProductList
+					products={products}
+					selectedId={selectedId}
+					setSelectedId={setSelectedId}
+				/>
 			</View>
 		</SafeAreaView>
 	);
