@@ -20,6 +20,7 @@ export default function SearchScreen() {
 
 	const handleSearch = async () => {
 		try {
+			setSelectedId(null);
 			const response = await fetch(`${getApiBaseUrl()}/query`, {
 				method: "POST",
 				headers: {

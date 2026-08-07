@@ -21,7 +21,11 @@ export default function ProductList({
 					product={product}
 					key={product.product_id}
 					isSelected={selectedId === product.product_id}
-					onPress={() => setSelectedId(product.product_id)}
+					onPress={() =>
+						setSelectedId(
+							selectedId === product.product_id ? null : product.product_id,
+						)
+					}
 				/>
 			))}
 		</ScrollView>
